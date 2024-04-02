@@ -1,9 +1,9 @@
 const path = require("path");
+const { EsbuildPlugin } = require("esbuild-loader");
 const { ProvidePlugin, NormalModuleReplacementPlugin } = require("webpack");
 
 module.exports = {
   mode: "production",
-  devtool: false,
   entry: {
     index: path.join(__dirname, "../build/src/index.js"),
   },
@@ -24,13 +24,10 @@ module.exports = {
       {
         test: /\.(tsx|ts|js|jsx)?$/,
         use: {
-          loader: "babel-loader",
+          loader: "esbuild-loader",
           options: {
-            presets: [
-              "@babel/preset-react",
-              "@babel/preset-typescript",
-              "@babel/preset-env",
-            ],
+            jsx: "automatic",
+            target: "node18",
           },
         },
       },
@@ -46,17 +43,22 @@ module.exports = {
     }),
 
     new NormalModuleReplacementPlugin(/([a-z-_0-9]+\.css)/, "noop2"),
-    new NormalModuleReplacementPlugin(/regenerator-runtime/, "noop2"),
   ],
   resolve: {
     extensions: [".ts", ".js", ".tsx", ".json"],
     modules: ["build", "node_modules", "build/src"],
-    // alias: {
-    //   "rct-markdown": path.join(__dirname, "../src/modules/rct-markdown/src"),
-    //   rumbo: path.join(__dirname, "../src/modules/rumbo/src"),
-    // },
   },
   optimization: {
-    minimize: false, //"compress",
+    minimizer: [
+      new EsbuildPlugin({
+        target: "node18",
+        css: true,
+        jsx: "automatic",
+        treeShaking: true,
+      }),
+    ],
   },
+  // optimization: {
+  //   minimize: false, //"compress",
+  // },
 };
