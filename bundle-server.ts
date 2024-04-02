@@ -6,6 +6,7 @@ import chalk from "chalk";
 import webpack from "webpack";
 
 import defaultConfigs from "./webpack.config.srv";
+
 import { merge } from "webpack-merge";
 import { resolveStaticImports } from "./utils/importResolver";
 

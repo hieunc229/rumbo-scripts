@@ -12,6 +12,7 @@ import webpackConfigs from "./webpack.config.ssr";
 
 import { rumboTempName } from "rumbo/configs";
 import { writeStats } from "./utils/writeStats";
+import { formatClassName } from "../src/modules/rumbo/src/utils/text";
 import { resolveImports, importPathsToClientRoutes } from "rumbo/utils/route";
 
 const buildDir = path.join(__dirname, "../build");
@@ -27,7 +28,7 @@ async function __bundleSSRClient({
   rootDir,
   appProps,
 }) {
-  const { location, excludePaths = [] } = item;
+  const { location, excludePaths = [], pwaEnabled } = item;
 
   const entries = resolveImports({
     route,
@@ -43,11 +44,7 @@ async function __bundleSSRClient({
 
   const routes = importPathsToClientRoutes({ paths: entries });
 
-  const componentPath = path.join(
-    rootDir,
-    rumboTempName,
-    `rumboEntry.tsx`
-  );
+  const componentPath = path.join(rootDir, rumboTempName, `rumboEntry.tsx`);
 
   generateClientSSRApp({
     componentPath,
@@ -66,9 +63,13 @@ async function __bundleSSRClient({
     rootDir,
     webpackConfigs,
     appProps,
+    pwaEnabled,
   });
 
-  writeStats(path.join(buildDir, `__rumbo/${route}.stats.json`), stats);
+  writeStats(
+    path.join(buildDir, `__rumbo/${formatClassName(route)}.stats.json`),
+    stats
+  );
 }
 
 async function buildClient() {

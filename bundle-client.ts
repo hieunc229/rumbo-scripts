@@ -8,6 +8,7 @@ import bundleClientSPA from "../src/modules/rumbo/src/clientSPA/bundler";
 
 import { writeStats } from "./utils/writeStats";
 import { resolveImports } from "rumbo/utils/route";
+import { formatClassName } from "../src/modules/rumbo/src/utils/text";
 
 const srcDir = path.join(__dirname, "../src");
 const buildDir = path.join(__dirname, "../build");
@@ -41,7 +42,7 @@ async function __bundleSPAClient({
     mode: "production",
   });
 
-  writeStats(path.join(buildDir, `__rumbo/${route}.stats.json`), stats);
+  writeStats(path.join(buildDir, `__rumbo/${formatClassName(route)}.stats.json`), stats);
 }
 
 async function buildClient() {
